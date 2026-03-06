@@ -1,111 +1,256 @@
 <p align="center">
-	<img src="https://nginxproxymanager.com/github.png">
-	<br><br>
-	<img src="https://img.shields.io/badge/version-2.14.0-green.svg?style=for-the-badge">
-	<a href="https://hub.docker.com/repository/docker/jc21/d3v-server-manager">
-		<img src="https://img.shields.io/docker/stars/jc21/d3v-server-manager.svg?style=for-the-badge">
-	</a>
-	<a href="https://hub.docker.com/repository/docker/jc21/d3v-server-manager">
-		<img src="https://img.shields.io/docker/pulls/jc21/d3v-server-manager.svg?style=for-the-badge">
-	</a>
+  <h1 align="center">D3V Server Manager</h1>
+  <p align="center">
+    A powerful, all-in-one web interface for managing Nginx reverse proxies, SSL certificates, and WireGuard VPN — built for self-hosters.
+  </p>
 </p>
 
-This project comes as a pre-built docker image that enables you to easily forward to your websites
-running at home or otherwise, including free SSL, without having to know too much about Nginx or Letsencrypt.
+<p align="center">
+  <a href="https://github.com/xtcnet/D3V-Server-Manager"><img src="https://img.shields.io/github/stars/xtcnet/D3V-Server-Manager?style=for-the-badge" alt="Stars"></a>
+  <a href="https://github.com/xtcnet/D3V-Server-Manager/issues"><img src="https://img.shields.io/github/issues/xtcnet/D3V-Server-Manager?style=for-the-badge" alt="Issues"></a>
+  <a href="https://github.com/xtcnet/D3V-Server-Manager/blob/develop/LICENSE"><img src="https://img.shields.io/github/license/xtcnet/D3V-Server-Manager?style=for-the-badge" alt="License"></a>
+</p>
 
-- [Quick Setup](#quick-setup)
-- [Full Setup](https://d3vservermanager.com/setup/)
-- [Screenshots](https://d3vservermanager.com/screenshots/)
+---
 
-## Project Goal
+## Overview
 
-I created this project to fill a personal need to provide users with an easy way to accomplish reverse
-proxying hosts with SSL termination and it had to be so easy that a monkey could do it. This goal hasn't changed.
-While there might be advanced options they are optional and the project should be as simple as possible
-so that the barrier for entry here is low.
+D3V Server Manager is a fork of [Nginx Proxy Manager](https://github.com/NginxProxyManager/nginx-proxy-manager) with integrated **WireGuard VPN management**, full rebranding, and an automated Ubuntu setup script. It provides a clean web UI for managing:
 
-<a href="https://www.buymeacoffee.com/jc21" target="_blank"><img src="http://public.jc21.com/github/by-me-a-coffee.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
+- **Reverse Proxy Hosts** — Forward domains to internal services with a few clicks
+- **SSL Certificates** — Free Let's Encrypt certificates with automatic renewal, or bring your own
+- **Redirection Hosts** — 301/302 redirects without touching config files
+- **Streams** — TCP/UDP port forwarding
+- **Access Lists** — HTTP basic auth and IP-based restrictions
+- **404 Hosts** — Custom "not found" pages for unused domains
+- **WireGuard VPN** — Create servers, manage peers, download configs, monitor live stats — all from the dashboard
 
+No Nginx or WireGuard CLI knowledge required.
+
+---
 
 ## Features
 
-- Beautiful and Secure Admin Interface based on [Tabler](https://tabler.github.io/)
-- Easily create forwarding domains, redirections, streams and 404 hosts without knowing anything about Nginx
-- Free SSL using Let's Encrypt or provide your own custom SSL certificates
-- Access Lists and basic HTTP Authentication for your hosts
-- Advanced Nginx configuration available for super users
-- User management, permissions and audit log
+| Feature | Description |
+|---|---|
+| **Proxy Hosts** | Reverse proxy with SSL termination, WebSocket support, custom headers, caching |
+| **SSL Certificates** | Let's Encrypt (HTTP-01 & DNS-01), custom certificates, auto-renewal |
+| **WireGuard VPN** | Built-in server/peer management, key generation, config download, live transfer stats |
+| **Redirections** | 301/302 redirects with regex support |
+| **Streams** | TCP/UDP port forwarding |
+| **Access Lists** | HTTP basic auth, IP allow/deny lists |
+| **User Management** | Multi-user with role-based permissions (admin / user) |
+| **Two-Factor Auth** | TOTP-based 2FA with backup codes |
+| **Audit Log** | Track all configuration changes |
+| **Dark/Light UI** | Modern Tabler-based responsive interface |
 
-::: warning
-`armv7` is no longer supported in version 2.14+. This is due to Nodejs dropping support for armhf. Please
-use the `2.13.7` image tag if this applies to you.
-:::
+---
 
-## Hosting your home network
+## Quick Start
 
-I won't go in to too much detail here but here are the basics for someone new to this self-hosted world.
+### Option 1: Automated Setup (Ubuntu)
 
-1. Your home router will have a Port Forwarding section somewhere. Log in and find it
-2. Add port forwarding for port 80 and 443 to the server hosting this project
-3. Configure your domain name details to point to your home, either with a static ip or a service like
-   - DuckDNS
-   - [Amazon Route53](https://github.com/jc21/route53-ddns)
-   - [Cloudflare](https://github.com/jc21/cloudflare-ddns)
-4. Use the D3V Server Manager as your gateway to forward to your other web based services
-
-## Quick Setup
-
-1. [Install Docker](https://docs.docker.com/install/)
-2. Create a docker-compose.yml file similar to this:
-
-```yml
-services:
-  app:
-    image: 'docker.io/jc21/d3v-server-manager:latest'
-    restart: unless-stopped
-    ports:
-      - '80:80'
-      - '81:81'
-      - '443:443'
-    volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+```bash
+curl -sSL https://raw.githubusercontent.com/xtcnet/D3V-Server-Manager/develop/setup.sh -o setup.sh
+chmod +x setup.sh
+sudo ./setup.sh install
 ```
 
-This is the bare minimum configuration required. See the [documentation](https://d3vservermanager.com/setup/) for more.
+This installs Docker, WireGuard kernel modules, pulls the image, creates a systemd service, and prints all connection details when done.
 
-3. Bring up your stack by running
+### Option 2: Docker Compose (Any OS)
+
+Create a `docker-compose.yml`:
+
+```yaml
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: d3v-server-manager
+    restart: unless-stopped
+    ports:
+      - '80:80'       # HTTP
+      - '81:81'       # Admin UI
+      - '443:443'     # HTTPS
+      - '51820:51820/udp'  # WireGuard
+    environment:
+      TZ: UTC
+      DB_SQLITE_FILE: "/data/database.sqlite"
+    volumes:
+      - d3v_data:/data
+      - d3v_letsencrypt:/etc/letsencrypt
+      - d3v_wireguard:/etc/wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:81/api"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  d3v_data:
+  d3v_letsencrypt:
+  d3v_wireguard:
+```
 
 ```bash
 docker compose up -d
 ```
 
-4. Log in to the Admin UI
+### Default Login
 
-When your docker container is running, connect to it on port `81` for the admin interface.
-Sometimes this can take a little bit because of the entropy of keys.
+| | |
+|---|---|
+| **URL** | `http://YOUR_SERVER_IP:81` |
+| **Email** | `admin@example.com` |
+| **Password** | `changeme` |
 
-[http://127.0.0.1:81](http://127.0.0.1:81)
+> **Change these credentials immediately after first login.**
 
+---
+
+## Ports
+
+| Port | Protocol | Service |
+|---|---|---|
+| `80` | TCP | HTTP proxy |
+| `81` | TCP | Admin web UI |
+| `443` | TCP | HTTPS proxy |
+| `51820` | UDP | WireGuard VPN |
+
+---
+
+## WireGuard VPN
+
+The integrated WireGuard module provides a full VPN solution directly inside the admin panel (admin-only).
+
+### Capabilities
+
+- **Create VPN servers** — Name, address range, listen port, endpoint, DNS, MTU, PostUp/PostDown scripts
+- **Manage peers** — Add clients with allowed IPs, persistent keepalive, auto IP allocation
+- **Download configs** — One-click `.conf` file download for each peer (import into any WireGuard client)
+- **Live monitoring** — Real-time transfer stats (TX/RX), last handshake time, enable/disable peers
+- **Multiple servers** — Run multiple WireGuard interfaces with separate subnets
+
+### Requirements
+
+The host must support the WireGuard kernel module. The container needs:
+
+- `NET_ADMIN` and `SYS_MODULE` capabilities
+- `net.ipv4.ip_forward=1` sysctl
+- UDP port `51820` exposed
+
+The setup script handles all of this automatically on Ubuntu.
+
+---
+
+## Setup Script Reference
+
+```
+Usage: sudo ./setup.sh <command>
+```
+
+| Command | Description |
+|---|---|
+| `install` | Full installation — Docker, WireGuard, image pull, systemd service |
+| `uninstall` | Interactive removal — stop only / remove volumes / full purge |
+| `repair` | Interactive repair — restart, rebuild, fix Docker, re-pull, reset DB, fix permissions, full |
+| `reset-password` | Reset any user's password via bcrypt hash + SQLite |
+| `update` | Pull latest image and recreate containers |
+| `status` | Full diagnostic — system info, prerequisites, containers, endpoint health |
+| `help` | Show usage |
+
+### Supported Platforms
+
+- Ubuntu 18.04 LTS
+- Ubuntu 20.04 LTS
+- Ubuntu 22.04 LTS
+- Ubuntu 24.04 LTS
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   Docker Container                  │
+│                                                     │
+│  ┌──────────┐  ┌──────────┐  ┌────────────────┐   │
+│  │  Nginx   │  │ Node.js  │  │   WireGuard    │   │
+│  │  :80/:443│  │ Backend  │  │   :51820/udp   │   │
+│  │  reverse  │  │  :81 API │  │   wg-quick     │   │
+│  │  proxy   │  │  Express  │  │   tunnels      │   │
+│  └──────────┘  └────┬─────┘  └────────────────┘   │
+│                      │                              │
+│               ┌──────┴──────┐                       │
+│               │   SQLite    │                       │
+│               │  /data/db   │                       │
+│               └─────────────┘                       │
+│                                                     │
+│  ┌──────────────────────────────────────────────┐  │
+│  │          React Frontend (Vite + TS)          │  │
+│  │          Tabler UI • React Query             │  │
+│  └──────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────┘
+```
+
+**Backend:** Node.js, Express, Objection.js (Knex), SQLite/PostgreSQL  
+**Frontend:** React 18, TypeScript, Vite, Tabler, React Query, Formik  
+**Infrastructure:** Docker, s6-overlay, Nginx, Certbot, WireGuard  
+
+---
+
+## Development
+
+```bash
+# Clone
+git clone https://github.com/xtcnet/D3V-Server-Manager.git
+cd D3V-Server-Manager
+
+# Start dev environment (requires Docker)
+cd docker
+docker compose -f docker-compose.dev.yml up --build
+
+# Frontend dev server
+cd frontend
+yarn install
+yarn dev
+
+# Backend runs inside the Docker container
+```
+
+The dev compose includes PostgreSQL, Redis, and a local CA for testing SSL.
+
+---
+
+## Hosting Your Home Network
+
+1. Log into your router and set up **port forwarding** for ports `80`, `443`, and `51820/udp` to your server
+2. Point your domain to your public IP using a DDNS service (DuckDNS, Cloudflare, Route53)
+3. Open D3V Server Manager at `http://YOUR_SERVER:81`
+4. Add proxy hosts to route domains to your internal services
+5. Enable Let's Encrypt SSL with one click
+6. Set up WireGuard VPN for secure remote access
+
+---
 
 ## Contributing
 
-All are welcome to create pull requests for this project, against the `develop` branch. Official releases are created from the `master` branch.
+Pull requests are welcome against the `develop` branch. All PRs must pass CI before review.
 
-CI is used in this project. All PR's must pass before being considered. After passing,
-docker builds for PR's are available on dockerhub for manual verifications.
+---
 
-Documentation within the `develop` branch is available for preview at
-[https://develop.d3vservermanager.com](https://develop.d3vservermanager.com)
+## Credits
 
+Built on top of [Nginx Proxy Manager](https://github.com/NginxProxyManager/nginx-proxy-manager) by [jc21](https://github.com/jc21). WireGuard integration and D3V branding by [xtcnet](https://github.com/xtcnet).
 
-### Contributors
+---
 
-Special thanks to [all of our contributors](https://github.com/D3VServerManager/d3v-server-manager/graphs/contributors).
+## License
 
-
-## Getting Support
-
-1. [Found a bug?](https://github.com/D3VServerManager/d3v-server-manager/issues)
-2. [Discussions](https://github.com/D3VServerManager/d3v-server-manager/discussions)
-3. [Reddit](https://reddit.com/r/d3vservermanager)
+[MIT](LICENSE)
