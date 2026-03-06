@@ -36,7 +36,7 @@ export function SiteHeader() {
 								alt="Logo"
 							/>
 						</div>
-						Nginx Proxy Manager
+						D3V Server Manager
 					</NavLink>
 				</div>
 				<div className="navbar-nav flex-row order-md-last">

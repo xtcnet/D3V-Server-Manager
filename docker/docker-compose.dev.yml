@@ -1,8 +1,8 @@
 # WARNING: This is a DEVELOPMENT docker-compose file, it should not be used for production.
 services:
   fullstack:
-    image: npm2dev:core
-    container_name: npm2dev.core
+    image: d3vdev:core
+    container_name: d3vdev.core
     build:
       context: ./
       dockerfile: ./dev/Dockerfile
@@ -18,7 +18,7 @@ services:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
     networks:
-      nginx_proxy_manager:
+      d3v_server_manager:
         aliases:
           - website1.example.com
           - website2.example.com
@@ -48,9 +48,9 @@ services:
       # DISABLE_IPV6: "true"
       # Required for DNS Certificate provisioning testing:
       LE_SERVER: "https://ca.internal/acme/acme/directory"
-      REQUESTS_CA_BUNDLE: "/etc/ssl/certs/NginxProxyManager.crt"
+      REQUESTS_CA_BUNDLE: "/etc/ssl/certs/D3VServerManager.crt"
     volumes:
-      - npm_data:/data
+      - d3v_data:/data
       - le_data:/etc/letsencrypt
       - "./dev/resolv.conf:/etc/resolv.conf:ro"
       - ../backend:/app
@@ -70,11 +70,11 @@ services:
 
   db:
     image: jc21/mariadb-aria
-    container_name: npm2dev.db
+    container_name: d3vdev.db
     ports:
       - 33306:3306
     networks:
-      - nginx_proxy_manager
+      - d3v_server_manager
     environment:
       TZ: "${TZ:-Australia/Brisbane}"
       MYSQL_ROOT_PASSWORD: "npm"
@@ -87,7 +87,7 @@ services:
 
   db-postgres:
     image: postgres:17
-    container_name: npm2dev.db-postgres
+    container_name: d3vdev.db-postgres
     environment:
       POSTGRES_USER: "npm"
       POSTGRES_PASSWORD: "npmpass"
@@ -96,32 +96,32 @@ services:
       - psql_data:/var/lib/postgresql/data
       - ./ci/postgres:/docker-entrypoint-initdb.d
     networks:
-      nginx_proxy_manager:
+      d3v_server_manager:
         aliases:
           - pgdb.internal
 
   stepca:
     image: jc21/testca
-    container_name: npm2dev.stepca
+    container_name: d3vdev.stepca
     volumes:
       - "./dev/resolv.conf:/etc/resolv.conf:ro"
       - "/etc/localtime:/etc/localtime:ro"
     networks:
-      nginx_proxy_manager:
+      d3v_server_manager:
         aliases:
           - ca.internal
 
   dnsrouter:
     image: jc21/dnsrouter
-    container_name: npm2dev.dnsrouter
+    container_name: d3vdev.dnsrouter
     volumes:
       - ./dev/dnsrouter-config.json.tmp:/dnsrouter-config.json:ro
     networks:
-      - nginx_proxy_manager
+      - d3v_server_manager
 
   swagger:
     image: swaggerapi/swagger-ui:latest
-    container_name: npm2dev.swagger
+    container_name: d3vdev.swagger
     ports:
       - 3082:80
     environment:
@@ -132,19 +132,19 @@ services:
 
   squid:
     image: ubuntu/squid
-    container_name: npm2dev.squid
+    container_name: d3vdev.squid
     volumes:
       - "./dev/squid.conf:/etc/squid/squid.conf:ro"
       - "./dev/resolv.conf:/etc/resolv.conf:ro"
       - "/etc/localtime:/etc/localtime:ro"
     networks:
-      - nginx_proxy_manager
+      - d3v_server_manager
     ports:
       - 8128:3128
 
   pdns:
     image: pschiffe/pdns-mysql:4.8
-    container_name: npm2dev.pdns
+    container_name: d3vdev.pdns
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     environment:
@@ -166,14 +166,14 @@ services:
     depends_on:
       - pdns-db
     networks:
-      nginx_proxy_manager:
+      d3v_server_manager:
         aliases:
           - ns1.pdns
           - ns2.pdns
 
   pdns-db:
     image: mariadb
-    container_name: npm2dev.pdns-db
+    container_name: d3vdev.pdns-db
     environment:
       MYSQL_ROOT_PASSWORD: "pdns"
       MYSQL_DATABASE: "pdns"
@@ -184,11 +184,11 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "./dev/pdns-db.sql:/docker-entrypoint-initdb.d/01_init.sql:ro"
     networks:
-      - nginx_proxy_manager
+      - d3v_server_manager
 
   cypress:
-    image: npm2dev:cypress
-    container_name: npm2dev.cypress
+    image: d3vdev:cypress
+    container_name: d3vdev.cypress
     build:
       context: ../
       dockerfile: test/cypress/Dockerfile
@@ -201,14 +201,14 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
     command: cypress run --browser chrome --config-file=cypress/config/ci.mjs
     networks:
-      - nginx_proxy_manager
+      - d3v_server_manager
 
   authentik-redis:
     image: "redis:alpine"
-    container_name: npm2dev.authentik-redis
+    container_name: d3vdev.authentik-redis
     command: --save 60 1 --loglevel warning
     networks:
-      - nginx_proxy_manager
+      - d3v_server_manager
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
@@ -221,11 +221,11 @@ services:
 
   authentik:
     image: ghcr.io/goauthentik/server:2024.10.1
-    container_name: npm2dev.authentik
+    container_name: d3vdev.authentik
     restart: unless-stopped
     command: server
     networks:
-      - nginx_proxy_manager
+      - d3v_server_manager
     env_file:
       - ci.env
     ports:
@@ -236,11 +236,11 @@ services:
 
   authentik-worker:
     image: ghcr.io/goauthentik/server:2024.10.1
-    container_name: npm2dev.authentik-worker
+    container_name: d3vdev.authentik-worker
     restart: unless-stopped
     command: worker
     networks:
-      - nginx_proxy_manager
+      - d3v_server_manager
     env_file:
       - ci.env
     depends_on:
@@ -249,9 +249,9 @@ services:
 
   authentik-ldap:
     image: ghcr.io/goauthentik/ldap:2024.10.1
-    container_name: npm2dev.authentik-ldap
+    container_name: d3vdev.authentik-ldap
     networks:
-      - nginx_proxy_manager
+      - d3v_server_manager
     environment:
       AUTHENTIK_HOST: "http://authentik:9000"
       AUTHENTIK_INSECURE: "true"
@@ -261,19 +261,19 @@ services:
       - authentik
 
 volumes:
-  npm_data:
-    name: npm2dev_core_data
+  d3v_data:
+    name: d3vdev_core_data
   le_data:
-    name: npm2dev_le_data
+    name: d3vdev_le_data
   db_data:
-    name: npm2dev_db_data
+    name: d3vdev_db_data
   pdns_mysql:
-    name: npnpm2dev_pdns_mysql
+    name: d3vdev_pdns_mysql
   psql_data:
-    name: npm2dev_psql_data
+    name: d3vdev_psql_data
   redis_data:
-    name: npm2dev_redis_data
+    name: d3vdev_redis_data
 
 networks:
-  nginx_proxy_manager:
-    name: npm2dev_network
+  d3v_server_manager:
+    name: d3vdev_network

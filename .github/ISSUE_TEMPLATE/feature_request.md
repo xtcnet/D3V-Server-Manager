@@ -12,7 +12,7 @@ assignees: ''
 Are you in the right place?
 - If you are looking for support on how to get your upstream server forwarding, please consider asking the community on Reddit.
 - If you are writing code changes to contribute and need to ask about the internals of the software, Gitter is the best place to ask.
-- If you think you found a bug with NPM (not Nginx, or your upstream server or MySql) then you are in the *right place.*
+- If you think you found a bug with D3V (not Nginx, or your upstream server or MySql) then you are in the *right place.*
 
 -->
 

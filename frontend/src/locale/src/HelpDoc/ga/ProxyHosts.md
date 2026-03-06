@@ -4,4 +4,4 @@ Is é Óstach Seachfhreastalaí an críochphointe isteach do sheirbhís ghréas�
 
 Soláthraíonn sé foirceannadh SSL roghnach do do sheirbhís nach bhfuil tacaíocht SSL ionsuite inti b'fhéidir.
 
-Is iad Óstaigh Seachfhreastalaí an úsáid is coitianta a bhaintear as Bainisteoir Seachfhreastalaí Nginx.
+Is iad Óstaigh Seachfhreastalaí an úsáid is coitianta a bhaintear as D3V Server Manager.

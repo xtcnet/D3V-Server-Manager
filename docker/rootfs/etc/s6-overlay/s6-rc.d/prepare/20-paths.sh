@@ -38,4 +38,4 @@ mkdir -p \
 touch /var/log/nginx/error.log || true
 chmod 777 /var/log/nginx/error.log || true
 chmod -R 777 /var/cache/nginx || true
-chmod 644 /etc/logrotate.d/nginx-proxy-manager
+chmod 644 /etc/logrotate.d/d3v-server-manager

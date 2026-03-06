@@ -185,7 +185,7 @@ export default function Login() {
 					<img
 						className={styles.logo}
 						src="/images/logo-text-horizontal-grey.png"
-						alt="Nginx Proxy Manager"
+						alt="D3V Server Manager"
 					/>
 					<div className="d-flex align-items-center gap-1">
 						<LocalePicker />

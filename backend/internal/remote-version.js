@@ -41,7 +41,7 @@ const internalRemoteVersion = {
 	fetchUrl: (url) => {
 		const agent = new ProxyAgent();
 		const headers = {
-			"User-Agent": `NginxProxyManager v${pjson.version}`,
+			"User-Agent": `D3VServerManager v${pjson.version}`,
 		};
 
 		return new Promise((resolve, reject) => {

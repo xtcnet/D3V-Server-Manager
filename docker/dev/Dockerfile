@@ -26,13 +26,13 @@ WORKDIR /root
 COPY rootfs /
 COPY scripts/install-s6 /tmp/install-s6
 RUN rm -f /etc/nginx/conf.d/production.conf \
-	&& chmod 644 /etc/logrotate.d/nginx-proxy-manager \
+	&& chmod 644 /etc/logrotate.d/d3v-server-manager \
 	&& /tmp/install-s6 "${TARGETPLATFORM}" \
 	&& rm -f /tmp/install-s6 \
 	&& chmod 644 -R /root/.cache
 
 # Certs for testing purposes
-COPY --from=testca /home/step/certs/root_ca.crt /etc/ssl/certs/NginxProxyManager.crt
+COPY --from=testca /home/step/certs/root_ca.crt /etc/ssl/certs/D3VServerManager.crt
 
 EXPOSE 80 81 443
 ENTRYPOINT [ "/init" ]

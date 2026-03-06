@@ -4,4 +4,4 @@ Puhverserver on veebiteenuse sissetuleva andmevoo lõpp-punkt, mida soovite edas
 
 See pakub valikulist SSL-i lõpetamist teie teenusele, millel ei pruugi olla sisseehitatud SSL-tuge.
 
-Puhverserverid on Nginxi puhverserveri halduri kõige levinum kasutusala.
+Puhverserverid on D3V Server Manager kõige levinum kasutusala.

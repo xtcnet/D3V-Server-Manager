@@ -352,7 +352,7 @@ const internalCertificate = {
 				.filter((fn) => fn.endsWith(".pem"))
 				.map((fn) => fs.realpathSync(path.join(zipDirectory, fn)));
 
-			const downloadName = `npm-${data.id}-${Date.now()}.zip`;
+			const downloadName = `d3v-${data.id}-${Date.now()}.zip`;
 			const opName = `/tmp/${downloadName}`;
 
 			await internalCertificate.zipFiles(certFiles, opName);
@@ -487,7 +487,7 @@ const internalCertificate = {
 	writeCustomCert: async (certificate) => {
 		logger.info("Writing Custom Certificate:", certificate);
 
-		const dir = `/data/custom_ssl/npm-${certificate.id}`;
+		const dir = `/data/custom_ssl/d3v-${certificate.id}`;
 
 		return new Promise((resolve, reject) => {
 			if (certificate.provider === "letsencrypt") {
@@ -696,7 +696,7 @@ const internalCertificate = {
 			// Examples:
 			// issuer=C = US, O = Let's Encrypt, CN = Let's Encrypt Authority X3
 			// issuer=C = US, O = Let's Encrypt, CN = E5
-			// issuer=O = NginxProxyManager, CN = NginxProxyManager Intermediate CA","O = NginxProxyManager, CN = NginxProxyManager Intermediate CA
+			// issuer=O = D3VServerManager, CN = D3VServerManager Intermediate CA","O = D3VServerManager, CN = D3VServerManager Intermediate CA
 			const regex2 = /^(?:issuer=)?(.*)$/gim;
 			const match2 = regex2.exec(result2);
 			if (match2 && typeof match2[1] !== "undefined") {
@@ -786,7 +786,7 @@ const internalCertificate = {
 			"--logs-dir",
 			certbotLogsDir,
 			"--cert-name",
-			`npm-${certificate.id}`,
+			`d3v-${certificate.id}`,
 			"--agree-tos",
 			"--authenticator",
 			"webroot",
@@ -841,7 +841,7 @@ const internalCertificate = {
 			"--logs-dir",
 			certbotLogsDir,
 			"--cert-name",
-			`npm-${certificate.id}`,
+			`d3v-${certificate.id}`,
 			"--agree-tos",
 			"-m",
 			email,
@@ -941,7 +941,7 @@ const internalCertificate = {
 			"--logs-dir",
 			certbotLogsDir,
 			"--cert-name",
-			`npm-${certificate.id}`,
+			`d3v-${certificate.id}`,
 			"--preferred-challenges",
 			"http",
 			"--no-random-sleep-on-renew",
@@ -987,7 +987,7 @@ const internalCertificate = {
 			"--logs-dir",
 			certbotLogsDir,
 			"--cert-name",
-			`npm-${certificate.id}`,
+			`d3v-${certificate.id}`,
 			"--preferred-challenges",
 			"dns",
 			"--disable-hook-validation",
@@ -1256,7 +1256,7 @@ const internalCertificate = {
 	},
 
 	getLiveCertPath: (certificateId) => {
-		return `/etc/letsencrypt/live/npm-${certificateId}`;
+		return `/etc/letsencrypt/live/d3v-${certificateId}`;
 	},
 };
 

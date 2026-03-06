@@ -12,10 +12,10 @@ services:
       FORCE_COLOR: 1
       # Required for DNS Certificate provisioning in CI
       LE_SERVER: "https://ca.internal/acme/acme/directory"
-      REQUESTS_CA_BUNDLE: "/etc/ssl/certs/NginxProxyManager.crt"
+      REQUESTS_CA_BUNDLE: "/etc/ssl/certs/D3VServerManager.crt"
     volumes:
-      - "npm_data_ci:/data"
-      - "npm_le_ci:/etc/letsencrypt"
+      - "d3v_data_ci:/data"
+      - "d3v_le_ci:/etc/letsencrypt"
       - "./dev/letsencrypt.ini:/etc/letsencrypt.ini:ro"
       - "./dev/resolv.conf:/etc/resolv.conf:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -124,10 +124,10 @@ services:
 
 volumes:
   cypress_logs:
-  npm_data_ci:
-  npm_le_ci:
+  d3v_data_ci:
+  d3v_le_ci:
   pdns_mysql_vol:
 
 networks:
   fulltest:
-    name: "npm-${BRANCH_LOWER}-ci-${BUILD_NUMBER}"
+    name: "d3v-${BRANCH_LOWER}-ci-${BUILD_NUMBER}"

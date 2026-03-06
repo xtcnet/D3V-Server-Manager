@@ -11,12 +11,12 @@ assignees: ''
 Are you in the right place?
 - If you are looking for support on how to get your upstream server forwarding, please consider asking the community on Reddit.
 - If you are writing code changes to contribute and need to ask about the internals of the software, Gitter is the best place to ask.
-- If you think you found a bug with NPM (not Nginx, or your upstream server or MySql) then you are in the *right place.*
+- If you think you found a bug with D3V (not Nginx, or your upstream server or MySql) then you are in the *right place.*
 
 -->
 
 **Checklist**
-- Have you pulled and found the error with `jc21/nginx-proxy-manager:latest` docker image?
+- Have you pulled and found the error with `jc21/d3v-server-manager:latest` docker image?
   - Yes / No
 - Are you sure you're not using someone else's docker image?
   - Yes / No
@@ -27,8 +27,8 @@ Are you in the right place?
 <!-- A clear and concise description of what the bug is. -->
 
 
-**Nginx Proxy Manager Version**
-<!-- What version of Nginx Proxy Manager is reported on the login page? -->
+**D3V Server Manager Version**
+<!-- What version of D3V Server Manager is reported on the login page? -->
 
 
 **To Reproduce**
