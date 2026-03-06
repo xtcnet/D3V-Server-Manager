@@ -56,28 +56,14 @@ chmod +x setup.sh
 sudo ./setup.sh install
 ```
 
-This installs Docker, WireGuard kernel modules, clones the repo, builds the custom Docker image from source, and starts everything with a systemd service.
+This installs Docker, WireGuard kernel modules, pulls the image from Docker Hub, and starts everything with a systemd service.
 
-### Option 2: Manual Build (Any OS with Docker)
-
-```bash
-# Clone the repository
-git clone -b develop https://github.com/xtcnet/D3V-Server-Manager.git
-cd D3V-Server-Manager
-
-# Build the Docker image from source
-docker build -f docker/Dockerfile.build -t d3v-server-manager:latest .
-
-# Start with Docker Compose
-docker compose -f docker-compose.yml up -d
-```
-
-You can use the generated `docker-compose.yml` from `setup.sh install`, or create your own:
+### Option 2: Docker Compose (Any OS)
 
 ```yaml
 services:
   app:
-    image: 'd3v-server-manager:latest'
+    image: 'd3vac/d3v-server-manager:latest'
     container_name: d3v-server-manager
     restart: unless-stopped
     ports:

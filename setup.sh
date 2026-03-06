@@ -7,7 +7,7 @@ set -euo pipefail
 # ─────────────────────────────────────────────────────────────────────────────
 
 APP_NAME="D3V Server Manager"
-IMAGE_NAME="d3v-server-manager:latest"
+IMAGE_NAME="d3vac/d3v-server-manager:latest"
 INSTALL_DIR="/opt/d3v-server-manager"
 LOG_FILE="/var/log/d3v-server-manager-setup.log"
 GITHUB_REPO="xtcnet/D3V-Server-Manager"
@@ -157,36 +157,15 @@ clone_or_update_repo() {
     fi
 }
 
-# ─── Build Docker image ──────────────────────────────────────────────────────
+# ─── Pull Docker image ────────────────────────────────────────────────────────
 
-build_image() {
-    step "Building Docker image (this may take several minutes)"
-
-    cd "$INSTALL_DIR"
-
-    local build_commit
-    build_commit=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
-    local build_date
-    build_date=$(date '+%Y-%m-%d %T %Z')
-
-    docker build \
-        --build-arg BUILD_VERSION="dev" \
-        --build-arg BUILD_COMMIT="$build_commit" \
-        --build-arg BUILD_DATE="$build_date" \
-        --build-arg TARGETPLATFORM="linux/$(dpkg --print-architecture)" \
-        -f docker/Dockerfile.build \
-        -t "$IMAGE_NAME" \
-        . 2>&1 | while IFS= read -r line; do
-            # show progress dots instead of full build output
-            if echo "$line" | grep -qE '^\s*(Step|#[0-9]+|DONE|---\>|Successfully)'; then
-                echo -e "    ${line}"
-            fi
-        done
-
+pull_image() {
+    step "Pulling Docker image"
+    docker pull "$IMAGE_NAME"
     if docker image inspect "$IMAGE_NAME" &>/dev/null; then
-        log "Docker image built: $IMAGE_NAME"
+        log "Docker image ready: $IMAGE_NAME"
     else
-        fail "Docker image build failed. Check logs: $LOG_FILE"
+        fail "Docker image pull failed"
     fi
 }
 
@@ -375,8 +354,8 @@ do_install() {
     install_docker
     install_wireguard_kernel
 
-    clone_or_update_repo
-    build_image
+    pull_image
+    mkdir -p "$INSTALL_DIR"
     create_docker_compose
 
     step "Starting services"
@@ -505,14 +484,14 @@ do_repair() {
             log "Services restarted"
             ;;
         2)
-            step "Rebuilding image"
+            step "Rebuilding containers"
             cd "$INSTALL_DIR" || fail "$INSTALL_DIR not found"
             $compose_cmd down
-            build_image
+            pull_image
             create_docker_compose
             $compose_cmd up -d
             wait_for_services
-            log "Image rebuilt and services restarted"
+            log "Image pulled and services restarted"
             ;;
         3)
             install_docker
@@ -520,16 +499,14 @@ do_repair() {
             log "Docker repaired"
             ;;
         4)
-            step "Pulling latest source and rebuilding"
-            clone_or_update_repo
-            cd "$INSTALL_DIR"
-            compose_cmd=$(get_compose_cmd)
+            step "Pulling latest image and restarting"
+            cd "$INSTALL_DIR" || fail "$INSTALL_DIR not found"
             $compose_cmd down 2>/dev/null || true
-            build_image
+            pull_image
             create_docker_compose
             $compose_cmd up -d
             wait_for_services
-            log "Updated to latest source and rebuilt"
+            log "Updated to latest image"
             ;;
         5)
             echo ""
@@ -560,8 +537,8 @@ do_repair() {
             systemctl restart docker
             sleep 3
 
-            clone_or_update_repo
-            build_image
+            pull_image
+            mkdir -p "$INSTALL_DIR"
             create_docker_compose
 
             cd "$INSTALL_DIR"
@@ -803,11 +780,8 @@ do_update() {
     compose_cmd=$(get_compose_cmd)
     [[ -z "$compose_cmd" ]] && fail "Docker Compose not found"
 
-    step "Pulling latest source"
-    clone_or_update_repo
-
-    step "Rebuilding image"
-    build_image
+    step "Pulling latest image"
+    pull_image
     create_docker_compose
 
     step "Recreating containers"
