@@ -72,7 +72,9 @@ RUN rm -rf /etc/s6-overlay/s6-rc.d/user/contents.d/frontend /etc/nginx/conf.d/de
 	&& if [ -f /etc/logrotate.d/nginx-proxy-manager ]; then mv /etc/logrotate.d/nginx-proxy-manager /etc/logrotate.d/d3v-server-manager; fi \
 	&& chmod 644 /etc/logrotate.d/d3v-server-manager
 
-VOLUME [ "/data", "/etc/wireguard" ]
+RUN mkdir -p /data /etc/letsencrypt /etc/wireguard
+
+VOLUME [ "/data", "/etc/letsencrypt", "/etc/wireguard" ]
 ENTRYPOINT [ "/init" ]
 
 LABEL org.label-schema.schema-version="1.0" \
