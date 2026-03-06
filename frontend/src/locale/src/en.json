@@ -772,5 +772,59 @@
 	},
 	"users": {
 		"defaultMessage": "Users"
+	},
+	"wireguard": {
+		"defaultMessage": "WireGuard"
+	},
+	"wireguard-server": {
+		"defaultMessage": "WireGuard Server"
+	},
+	"wireguard-peer": {
+		"defaultMessage": "WireGuard Peer"
+	},
+	"wireguard.address": {
+		"defaultMessage": "Address"
+	},
+	"wireguard.listen-port": {
+		"defaultMessage": "Listen Port"
+	},
+	"wireguard.endpoint": {
+		"defaultMessage": "Endpoint"
+	},
+	"wireguard.endpoint.hint": {
+		"defaultMessage": "Public IP or domain clients will connect to"
+	},
+	"wireguard.public-key": {
+		"defaultMessage": "Public Key"
+	},
+	"wireguard.peers": {
+		"defaultMessage": "Peers"
+	},
+	"wireguard.peers.count": {
+		"defaultMessage": "{count} WireGuard {count, plural, one {Peer} other {Peers}}"
+	},
+	"wireguard.allowed-ips": {
+		"defaultMessage": "Allowed IPs"
+	},
+	"wireguard.allowed-ips.hint": {
+		"defaultMessage": "Comma separated. Use 0.0.0.0/0, ::/0 to route all traffic"
+	},
+	"wireguard.persistent-keepalive": {
+		"defaultMessage": "Persistent Keepalive (seconds)"
+	},
+	"wireguard.transfer": {
+		"defaultMessage": "Transfer"
+	},
+	"wireguard.handshake": {
+		"defaultMessage": "Last Handshake"
+	},
+	"wireguard.no-servers": {
+		"defaultMessage": "No WireGuard Servers"
+	},
+	"wireguard.no-servers.hint": {
+		"defaultMessage": "Create a WireGuard server to start managing VPN peers"
+	},
+	"wireguard.create-server": {
+		"defaultMessage": "Create WireGuard Server"
 	}
 }

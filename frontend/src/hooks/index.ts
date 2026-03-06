@@ -20,3 +20,6 @@ export * from "./useStreams";
 export * from "./useTheme";
 export * from "./useUser";
 export * from "./useUsers";
+export * from "./useWireguardServers";
+export * from "./useWireguardServer";
+export * from "./useWireguardPeers";

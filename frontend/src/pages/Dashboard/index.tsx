@@ -1,9 +1,9 @@
-import { IconArrowsCross, IconBolt, IconBoltOff, IconDisc } from "@tabler/icons-react";
+import { IconArrowsCross, IconBolt, IconBoltOff, IconDisc, IconNetwork } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { HasPermission } from "src/components";
 import { useHostReport } from "src/hooks";
 import { T } from "src/locale";
-import { DEAD_HOSTS, PROXY_HOSTS, REDIRECTION_HOSTS, STREAMS, VIEW } from "src/modules/Permissions";
+import { ADMIN, DEAD_HOSTS, PROXY_HOSTS, REDIRECTION_HOSTS, STREAMS, VIEW } from "src/modules/Permissions";
 
 const Dashboard = () => {
 	const { data: hostReport } = useHostReport();
@@ -116,6 +116,31 @@ const Dashboard = () => {
 											</div>
 											<div className="col">
 												<T id="dead-hosts.count" data={{ count: hostReport?.dead }} />
+											</div>
+										</div>
+									</div>
+								</a>
+							</div>
+						</HasPermission>
+						<HasPermission section={ADMIN} hideError>
+							<div className="col-sm-6 col-lg-3">
+								<a
+									href="/wireguard"
+									className="card card-sm card-link card-link-pop"
+									onClick={(e) => {
+										e.preventDefault();
+										navigate("/wireguard");
+									}}
+								>
+									<div className="card-body">
+										<div className="row align-items-center">
+											<div className="col-auto">
+												<span className="bg-purple text-white avatar">
+													<IconNetwork />
+												</span>
+											</div>
+											<div className="col">
+												<T id="wireguard.peers.count" data={{ count: hostReport?.wireguardPeers ?? 0 }} />
 											</div>
 										</div>
 									</div>

@@ -3,6 +3,7 @@ import {
 	IconDeviceDesktop,
 	IconHome,
 	IconLock,
+	IconNetwork,
 	IconSettings,
 	IconShield,
 	IconUser,
@@ -82,6 +83,12 @@ const menuItems: MenuItem[] = [
 		label: "certificates",
 		permissionSection: CERTIFICATES,
 		permission: VIEW,
+	},
+	{
+		to: "/wireguard",
+		icon: IconNetwork,
+		label: "wireguard",
+		permissionSection: ADMIN,
 	},
 	{
 		to: "/users",

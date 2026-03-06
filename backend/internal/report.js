@@ -2,6 +2,7 @@ import internalDeadHost from "./dead-host.js";
 import internalProxyHost from "./proxy-host.js";
 import internalRedirectionHost from "./redirection-host.js";
 import internalStream from "./stream.js";
+import internalWireguard from "./wireguard.js";
 
 const internalReport = {
 	/**
@@ -19,6 +20,7 @@ const internalReport = {
 					internalRedirectionHost.getCount(userId, access_data.permission_visibility),
 					internalStream.getCount(userId, access_data.permission_visibility),
 					internalDeadHost.getCount(userId, access_data.permission_visibility),
+					internalWireguard.getPeerCount(userId, access_data.permission_visibility),
 				];
 
 				return Promise.all(promises);
@@ -29,6 +31,7 @@ const internalReport = {
 					redirection: counts.shift(),
 					stream: counts.shift(),
 					dead: counts.shift(),
+					wireguardPeers: counts.shift(),
 				};
 			});
 	},

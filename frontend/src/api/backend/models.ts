@@ -208,3 +208,45 @@ export interface DNSProvider {
 	name: string;
 	credentials: string;
 }
+
+export interface WireguardServer {
+	id: number;
+	createdOn: string;
+	modifiedOn: string;
+	ownerUserId: number;
+	name: string;
+	privateKey: string;
+	publicKey: string;
+	address: string;
+	listenPort: number;
+	dns: string;
+	mtu: number;
+	postUp: string;
+	postDown: string;
+	endpoint: string;
+	enabled: boolean;
+	meta: Record<string, any>;
+	owner?: User;
+}
+
+export interface WireguardPeer {
+	id: number;
+	createdOn: string;
+	modifiedOn: string;
+	serverId: number;
+	ownerUserId: number;
+	name: string;
+	privateKey: string;
+	publicKey: string;
+	presharedKey: string;
+	allowedIps: string;
+	address: string;
+	persistentKeepalive: number;
+	enabled: boolean;
+	transferRx: number;
+	transferTx: number;
+	latestHandshake: string;
+	meta: Record<string, any>;
+	owner?: User;
+	server?: WireguardServer;
+}
