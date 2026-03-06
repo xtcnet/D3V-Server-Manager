@@ -1,5 +1,3 @@
-import * as api from "./base";
-
 export async function getWireguardPeerConfig(peerId: number): Promise<string> {
 	const response = await fetch(`/api/wireguard/peers/${peerId}/config`, {
 		headers: {

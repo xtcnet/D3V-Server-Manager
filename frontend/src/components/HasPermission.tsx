@@ -3,11 +3,11 @@ import Alert from "react-bootstrap/Alert";
 import { Loading, LoadingPage } from "src/components";
 import { useUser } from "src/hooks";
 import { T } from "src/locale";
-import { type ADMIN, hasPermission, type Permission, type Section } from "src/modules/Permissions";
+import { type ADMIN, hasPermission, isAdmin, type Permission, type Section } from "src/modules/Permissions";
 
 interface Props {
 	section?: Section | typeof ADMIN;
-	permission: Permission;
+	permission?: Permission;
 	hideError?: boolean;
 	children?: ReactNode;
 	pageLoading?: boolean;
@@ -37,7 +37,9 @@ function HasPermission({
 		return <Loading noLogo={loadingNoLogo} />;
 	}
 
-	const allowed = hasPermission(section, permission, data?.permissions, data?.roles);
+	const allowed = permission
+		? hasPermission(section, permission, data?.permissions, data?.roles)
+		: isAdmin(data?.roles);
 	if (allowed) {
 		return <>{children}</>;
 	}

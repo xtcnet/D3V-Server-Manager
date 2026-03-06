@@ -18,7 +18,7 @@ import {
 	getWireguardPeerConfig,
 	toggleWireguardPeer,
 } from "src/api/backend";
-import { Button, EmptyData, HasPermission, Loading, LoadingPage } from "src/components";
+import { Button, HasPermission, Loading, LoadingPage } from "src/components";
 import { useWireguardPeers, useWireguardServers } from "src/hooks";
 import { T } from "src/locale";
 import {
@@ -123,7 +123,9 @@ function PeerTable({ serverId }: { serverId: number }) {
 			</div>
 
 			{!filtered || filtered.length === 0 ? (
-				<EmptyData title="wireguard-peer" />
+				<div className="text-center text-secondary py-4">
+					No peers configured for this server.
+				</div>
 			) : (
 				<div className="table-responsive">
 					<table className="table table-vcenter card-table">
@@ -163,7 +165,6 @@ function PeerTable({ serverId }: { serverId: number }) {
 											<Button
 												size="sm"
 												className="btn-icon"
-												title="Download Config"
 												onClick={() => handleDownload(peer.id, peer.name)}
 											>
 												<IconDownload size={16} />
