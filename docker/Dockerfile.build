@@ -62,14 +62,11 @@ RUN yarn install --production \
 COPY docker/rootfs /
 COPY --from=testca /home/step/certs/root_ca.crt /etc/ssl/certs/D3VServerManager.crt
 
-# Fix CRLF line endings on shell scripts from Windows git checkout
-RUN find /etc/s6-overlay/s6-rc.d -name '*.sh' -exec sed -i 's/\r$//' {} + 2>/dev/null || true \
-	&& find /etc/s6-overlay/s6-rc.d -name 'run' -exec sed -i 's/\r$//' {} + 2>/dev/null || true \
-	&& find /etc/s6-overlay/s6-rc.d -name 'finish' -exec sed -i 's/\r$//' {} + 2>/dev/null || true \
-	&& find /usr/bin -maxdepth 1 -name '*.sh' -exec sed -i 's/\r$//' {} + 2>/dev/null || true \
-	&& sed -i 's/\r$//' /etc/logrotate.d/d3v-server-manager 2>/dev/null || true \
-	&& sed -i 's/\r$//' /etc/nginx/conf.d/*.conf 2>/dev/null || true \
-	&& sed -i 's/\r$//' /etc/nginx/nginx.conf 2>/dev/null || true
+# Fix CRLF line endings from Windows git checkout on all text config files
+RUN find /etc/s6-overlay/s6-rc.d -type f | while read f; do sed -i 's/\r$//' "$f" 2>/dev/null || true; done \
+	&& find /usr/bin -maxdepth 1 -type f -name '*.sh' -exec sed -i 's/\r$//' {} + 2>/dev/null || true \
+	&& sed -i 's/\r$//' /etc/logrotate.d/* 2>/dev/null || true \
+	&& sed -i 's/\r$//' /etc/nginx/conf.d/*.conf /etc/nginx/nginx.conf 2>/dev/null || true
 
 RUN rm -rf /etc/s6-overlay/s6-rc.d/user/contents.d/frontend /etc/nginx/conf.d/dev.conf \
 	&& if [ -f /etc/logrotate.d/nginx-proxy-manager ]; then mv /etc/logrotate.d/nginx-proxy-manager /etc/logrotate.d/d3v-server-manager; fi \
