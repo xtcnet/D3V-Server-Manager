@@ -7,9 +7,9 @@ set -euo pipefail
 # ─────────────────────────────────────────────────────────────────────────────
 
 APP_NAME="D3V Server Manager"
+IMAGE_NAME="d3v-server-manager:latest"
 INSTALL_DIR="/opt/d3v-server-manager"
 LOG_FILE="/var/log/d3v-server-manager-setup.log"
-COMPOSE_PROJECT="d3v-server-manager"
 GITHUB_REPO="xtcnet/D3V-Server-Manager"
 
 RED='\033[0;31m'
@@ -66,16 +66,16 @@ check_system_requirements() {
     local mem_kb mem_mb
     mem_kb=$(grep MemTotal /proc/meminfo | awk '{print $2}')
     mem_mb=$((mem_kb / 1024))
-    if [[ $mem_mb -lt 512 ]]; then
-        warn "Low memory: ${mem_mb}MB (recommended: 1024MB+)"
+    if [[ $mem_mb -lt 1024 ]]; then
+        warn "Low memory: ${mem_mb}MB (recommended: 2048MB+ for building)"
     else
         log "RAM: ${mem_mb}MB"
     fi
 
     local disk_avail
     disk_avail=$(df -BM "$INSTALL_DIR" 2>/dev/null | awk 'NR==2{print $4}' | tr -d 'M' || df -BM / | awk 'NR==2{print $4}' | tr -d 'M')
-    if [[ "$disk_avail" -lt 2048 ]]; then
-        warn "Low disk space: ${disk_avail}MB (recommended: 2048MB+)"
+    if [[ "$disk_avail" -lt 4096 ]]; then
+        warn "Low disk space: ${disk_avail}MB (recommended: 4096MB+ for building)"
     else
         log "Disk: ${disk_avail}MB available"
     fi
@@ -143,7 +143,7 @@ install_base_packages() {
 # ─── Clone / update repo ─────────────────────────────────────────────────────
 
 clone_or_update_repo() {
-    step "Setting up application"
+    step "Downloading source code"
 
     if [[ -d "$INSTALL_DIR/.git" ]]; then
         cd "$INSTALL_DIR"
@@ -157,15 +157,48 @@ clone_or_update_repo() {
     fi
 }
 
+# ─── Build Docker image ──────────────────────────────────────────────────────
+
+build_image() {
+    step "Building Docker image (this may take several minutes)"
+
+    cd "$INSTALL_DIR"
+
+    local build_commit
+    build_commit=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+    local build_date
+    build_date=$(date '+%Y-%m-%d %T %Z')
+
+    docker build \
+        --build-arg BUILD_VERSION="dev" \
+        --build-arg BUILD_COMMIT="$build_commit" \
+        --build-arg BUILD_DATE="$build_date" \
+        --build-arg TARGETPLATFORM="linux/$(dpkg --print-architecture)" \
+        -f docker/Dockerfile.build \
+        -t "$IMAGE_NAME" \
+        . 2>&1 | while IFS= read -r line; do
+            # show progress dots instead of full build output
+            if echo "$line" | grep -qE '^\s*(Step|#[0-9]+|DONE|---\>|Successfully)'; then
+                echo -e "    ${line}"
+            fi
+        done
+
+    if docker image inspect "$IMAGE_NAME" &>/dev/null; then
+        log "Docker image built: $IMAGE_NAME"
+    else
+        fail "Docker image build failed. Check logs: $LOG_FILE"
+    fi
+}
+
 # ─── Docker compose setup ────────────────────────────────────────────────────
 
 create_docker_compose() {
     step "Creating Docker Compose configuration"
 
-    cat > "$INSTALL_DIR/docker-compose.yml" <<'COMPOSE'
+    cat > "$INSTALL_DIR/docker-compose.yml" <<COMPOSE
 services:
   app:
-    image: 'jc21/nginx-proxy-manager:latest'
+    image: '${IMAGE_NAME}'
     container_name: d3v-server-manager
     restart: unless-stopped
     ports:
@@ -174,7 +207,7 @@ services:
       - '443:443'
       - '51820:51820/udp'
     environment:
-      TZ: ${TZ:-UTC}
+      TZ: \${TZ:-UTC}
       DB_SQLITE_FILE: "/data/database.sqlite"
     volumes:
       - d3v_data:/data
@@ -206,7 +239,7 @@ COMPOSE
 wait_for_services() {
     step "Waiting for services to start"
 
-    local max_wait=120
+    local max_wait=180
     local waited=0
     echo -n "  "
 
@@ -295,6 +328,7 @@ print_success() {
     echo -e "  ${BOLD}${BLUE}── Configuration ──────────────────────────────────────────${NC}"
     echo ""
     echo -e "    Install dir:    $INSTALL_DIR"
+    echo -e "    Docker image:   $IMAGE_NAME"
     echo -e "    Data volume:    d3v_data"
     echo -e "    SSL certs:      d3v_letsencrypt"
     echo -e "    WireGuard:      d3v_wireguard"
@@ -342,6 +376,7 @@ do_install() {
     install_wireguard_kernel
 
     clone_or_update_repo
+    build_image
     create_docker_compose
 
     step "Starting services"
@@ -350,7 +385,6 @@ do_install() {
     compose_cmd=$(get_compose_cmd)
     [[ -z "$compose_cmd" ]] && fail "Docker Compose not found"
 
-    $compose_cmd pull
     $compose_cmd up -d
 
     wait_for_services
@@ -370,7 +404,7 @@ do_uninstall() {
     echo "  Uninstall options:"
     echo "    1) Stop containers only (keep data)"
     echo "    2) Remove containers and volumes (delete ALL data)"
-    echo "    3) Full removal (containers + data + source + systemd)"
+    echo "    3) Full removal (containers + data + image + source + systemd)"
     echo "    4) Cancel"
     echo ""
 
@@ -408,8 +442,10 @@ do_uninstall() {
             step "Full removal"
 
             if [[ -d "$INSTALL_DIR" ]] && [[ -n "$compose_cmd" ]]; then
-                (cd "$INSTALL_DIR" && $compose_cmd down -v --rmi all --remove-orphans 2>/dev/null) || true
+                (cd "$INSTALL_DIR" && $compose_cmd down -v --remove-orphans 2>/dev/null) || true
             fi
+
+            docker rmi "$IMAGE_NAME" 2>/dev/null || true
 
             if [[ -f /etc/systemd/system/d3v-server-manager.service ]]; then
                 systemctl stop d3v-server-manager 2>/dev/null || true
@@ -445,9 +481,9 @@ do_repair() {
 
     echo "  Repair options:"
     echo "    1) Restart all services"
-    echo "    2) Rebuild containers (keep data)"
+    echo "    2) Rebuild image and restart (keep data)"
     echo "    3) Fix Docker installation"
-    echo "    4) Re-pull latest image and restart"
+    echo "    4) Pull latest source, rebuild, and restart"
     echo "    5) Reset database (WARNING: deletes all config)"
     echo "    6) Fix file permissions"
     echo "    7) Full repair (fix everything)"
@@ -469,12 +505,14 @@ do_repair() {
             log "Services restarted"
             ;;
         2)
-            step "Rebuilding containers"
+            step "Rebuilding image"
             cd "$INSTALL_DIR" || fail "$INSTALL_DIR not found"
             $compose_cmd down
-            $compose_cmd up -d --force-recreate
+            build_image
+            create_docker_compose
+            $compose_cmd up -d
             wait_for_services
-            log "Containers rebuilt"
+            log "Image rebuilt and services restarted"
             ;;
         3)
             install_docker
@@ -482,12 +520,16 @@ do_repair() {
             log "Docker repaired"
             ;;
         4)
-            step "Pulling latest image"
-            cd "$INSTALL_DIR" || fail "$INSTALL_DIR not found"
-            $compose_cmd pull
-            $compose_cmd up -d --force-recreate
+            step "Pulling latest source and rebuilding"
+            clone_or_update_repo
+            cd "$INSTALL_DIR"
+            compose_cmd=$(get_compose_cmd)
+            $compose_cmd down 2>/dev/null || true
+            build_image
+            create_docker_compose
+            $compose_cmd up -d
             wait_for_services
-            log "Updated to latest image"
+            log "Updated to latest source and rebuilt"
             ;;
         5)
             echo ""
@@ -519,12 +561,12 @@ do_repair() {
             sleep 3
 
             clone_or_update_repo
+            build_image
             create_docker_compose
 
             cd "$INSTALL_DIR"
             compose_cmd=$(get_compose_cmd)
             $compose_cmd down 2>/dev/null || true
-            $compose_cmd pull
             $compose_cmd up -d --force-recreate
             wait_for_services
             create_systemd_service
@@ -585,19 +627,21 @@ do_reset_password() {
 
     step "Resetting password"
 
-    # Generate bcrypt hash inside the container (Node.js has bcrypt)
+    # Escape single quotes in password for safe shell embedding
+    local escaped_password
+    escaped_password=$(printf '%s' "$new_password" | sed "s/'/'\\\\''/g")
+
+    # Generate bcrypt hash inside the container using Node.js
     local hash
     hash=$(docker exec "$container" node -e "
-        const bcrypt = require('bcrypt');
-        bcrypt.hash('${new_password}', 13).then(h => process.stdout.write(h));
-    " 2>/dev/null)
+        import('bcrypt').then(b => b.default.hash('${escaped_password}', 13).then(h => process.stdout.write(h)));
+    " 2>/dev/null) || true
 
     if [[ -z "$hash" ]]; then
-        # Fallback: try using sqlite3 directly
-        warn "Could not hash via Node.js, trying direct SQLite update..."
         hash=$(docker exec "$container" node -e "
-            import('bcrypt').then(b => b.default.hash('${new_password}', 13).then(h => process.stdout.write(h)));
-        " 2>/dev/null || true)
+            const bcrypt = require('bcrypt');
+            bcrypt.hash('${escaped_password}', 13).then(h => process.stdout.write(h));
+        " 2>/dev/null) || true
     fi
 
     if [[ -z "$hash" ]]; then
@@ -606,7 +650,7 @@ do_reset_password() {
 
     # Update via SQLite
     docker exec "$container" sqlite3 /data/database.sqlite \
-        "UPDATE auth SET secret='${hash}' WHERE EXISTS (SELECT 1 FROM user WHERE user.id = auth.user_id AND user.email = '${email}' AND user.is_deleted = 0) AND auth.type = 'password';" 2>/dev/null
+        "UPDATE auth SET secret='${hash}' WHERE user_id IN (SELECT id FROM user WHERE email='${email}' AND is_deleted=0) AND type='password';" 2>/dev/null
 
     if [[ $? -eq 0 ]]; then
         echo ""
@@ -616,20 +660,7 @@ do_reset_password() {
         echo -e "    Password: ${CYAN}(your new password)${NC}"
         echo ""
     else
-        # Alternative: use the API to reset
-        warn "Direct DB update failed. Trying alternative method..."
-
-        # Get all user IDs and find matching email
-        docker exec "$container" sh -c "
-            sqlite3 /data/database.sqlite \"UPDATE auth SET secret='${hash}' WHERE user_id IN (SELECT id FROM user WHERE email='${email}' AND is_deleted=0) AND type='password';\"
-        " 2>/dev/null && {
-            echo ""
-            log "Password reset successfully!"
-            echo -e "    Email:    ${CYAN}${email}${NC}"
-            echo ""
-        } || {
-            fail "Failed to reset password. Please check the email address and try again."
-        }
+        fail "Failed to reset password. Please check the email address and try again."
     fi
 }
 
@@ -677,6 +708,12 @@ do_status() {
         echo -e "    Docker daemon:    ${RED}not running${NC}"; all_ok=false
     fi
 
+    if docker image inspect "$IMAGE_NAME" &>/dev/null 2>&1; then
+        echo -e "    D3V Image:        ${GREEN}$IMAGE_NAME${NC}"
+    else
+        echo -e "    D3V Image:        ${RED}not built${NC}"; all_ok=false
+    fi
+
     if lsmod | grep -q wireguard 2>/dev/null; then
         echo -e "    WireGuard:        ${GREEN}kernel module loaded${NC}"
     else
@@ -689,6 +726,11 @@ do_status() {
 
     if [[ -d "$INSTALL_DIR" ]]; then
         echo -e "    Install dir:      ${GREEN}$INSTALL_DIR${NC}"
+        if [[ -d "$INSTALL_DIR/.git" ]]; then
+            local commit
+            commit=$(cd "$INSTALL_DIR" && git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+            echo -e "    Source commit:    ${CYAN}$commit${NC}"
+        fi
     else
         echo -e "    Install dir:      ${RED}not found${NC}"; all_ok=false
     fi
@@ -736,7 +778,7 @@ do_status() {
 
     echo -e "  ${BOLD}${BLUE}── Management ─────────────────────────────────────────────${NC}"
     echo ""
-    echo -e "    sudo $0 update             # Update"
+    echo -e "    sudo $0 update             # Pull latest source and rebuild"
     echo -e "    sudo $0 repair             # Repair"
     echo -e "    sudo $0 reset-password     # Reset password"
     echo -e "    sudo $0 uninstall          # Uninstall"
@@ -757,17 +799,21 @@ do_update() {
 
     check_root
 
-    cd "$INSTALL_DIR" || fail "$INSTALL_DIR not found. Run install first."
-
     local compose_cmd
     compose_cmd=$(get_compose_cmd)
     [[ -z "$compose_cmd" ]] && fail "Docker Compose not found"
 
-    step "Pulling latest image"
-    $compose_cmd pull
+    step "Pulling latest source"
+    clone_or_update_repo
+
+    step "Rebuilding image"
+    build_image
+    create_docker_compose
 
     step "Recreating containers"
-    $compose_cmd up -d --force-recreate
+    cd "$INSTALL_DIR"
+    $compose_cmd down 2>/dev/null || true
+    $compose_cmd up -d
 
     wait_for_services
     log "Update complete"
@@ -781,11 +827,11 @@ do_help() {
     echo "Usage: sudo $0 <command>"
     echo ""
     echo "Commands:"
-    echo "  install           Install ${APP_NAME} with all dependencies"
+    echo "  install           Install ${APP_NAME} (clone source, build image, start)"
     echo "  uninstall         Uninstall (interactive, 3 levels)"
     echo "  repair            Repair installation (interactive, 7 options)"
     echo "  reset-password    Reset admin user password"
-    echo "  update            Pull latest image and restart"
+    echo "  update            Pull latest source, rebuild image, restart"
     echo "  status            Show full diagnostic information"
     echo "  help              Show this help"
     echo ""
