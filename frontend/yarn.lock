@@ -170,59 +170,59 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.28.5"
 
-"@biomejs/biome@^2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@biomejs/biome/-/biome-2.4.5.tgz#90e75c1b6c60eb5bf8e8bfb193a1fbe9dc868f16"
-  integrity sha512-OWNCyMS0Q011R6YifXNOg6qsOg64IVc7XX6SqGsrGszPbkVCoaO7Sr/lISFnXZ9hjQhDewwZ40789QmrG0GYgQ==
+"@biomejs/biome@^2.4.16":
+  version "2.4.16"
+  resolved "https://registry.yarnpkg.com/@biomejs/biome/-/biome-2.4.16.tgz#241feeafcbc9c26ced1600e5c6016f4b3b599d24"
+  integrity sha512-x9ajFh1zChVybCiM3TN6OD4phAqLgtPZjFrZF+aTMYCPjwBO+k529TX7PPsAqtGNLeV4UgzwQnowEgS7bGmzcA==
   optionalDependencies:
-    "@biomejs/cli-darwin-arm64" "2.4.5"
-    "@biomejs/cli-darwin-x64" "2.4.5"
-    "@biomejs/cli-linux-arm64" "2.4.5"
-    "@biomejs/cli-linux-arm64-musl" "2.4.5"
-    "@biomejs/cli-linux-x64" "2.4.5"
-    "@biomejs/cli-linux-x64-musl" "2.4.5"
-    "@biomejs/cli-win32-arm64" "2.4.5"
-    "@biomejs/cli-win32-x64" "2.4.5"
+    "@biomejs/cli-darwin-arm64" "2.4.16"
+    "@biomejs/cli-darwin-x64" "2.4.16"
+    "@biomejs/cli-linux-arm64" "2.4.16"
+    "@biomejs/cli-linux-arm64-musl" "2.4.16"
+    "@biomejs/cli-linux-x64" "2.4.16"
+    "@biomejs/cli-linux-x64-musl" "2.4.16"
+    "@biomejs/cli-win32-arm64" "2.4.16"
+    "@biomejs/cli-win32-x64" "2.4.16"
 
-"@biomejs/cli-darwin-arm64@2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-darwin-arm64/-/cli-darwin-arm64-2.4.5.tgz#a62472ab3529a3905b16e1f3fdbbc74f2e5f0023"
-  integrity sha512-lGS4Nd5O3KQJ6TeWv10mElnx1phERhBxqGP/IKq0SvZl78kcWDFMaTtVK+w3v3lusRFxJY78n07PbKplirsU5g==
+"@biomejs/cli-darwin-arm64@2.4.16":
+  version "2.4.16"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-darwin-arm64/-/cli-darwin-arm64-2.4.16.tgz#c361db44920728d57e2b0a48bb88c09ad01101b9"
+  integrity sha512-wxPvu4XOA85YJk9ixSWUmq/QBHbid85BISbOAqqBM/5xQpPk9ayjk5375tOlSC0BeCwNSbPFafQBm+vBumXq0A==
 
-"@biomejs/cli-darwin-x64@2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-darwin-x64/-/cli-darwin-x64-2.4.5.tgz#e8bb001fcf6a8c751b0971cccf53993e9ba2e6e9"
-  integrity sha512-6MoH4tyISIBNkZ2Q5T1R7dLd5BsITb2yhhhrU9jHZxnNSNMWl+s2Mxu7NBF8Y3a7JJcqq9nsk8i637z4gqkJxQ==
+"@biomejs/cli-darwin-x64@2.4.16":
+  version "2.4.16"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-darwin-x64/-/cli-darwin-x64-2.4.16.tgz#4e69cfecd92f2909b87a9a1dff61f18dbc013088"
+  integrity sha512-xFCqGPwYusQJp4N4NJLi1XJiZqjwFdjhT+KqtNy+Ug3qgfczqnTa6MSDvxJF6TkuDLoYJItMapz6tAf7kCekFw==
 
-"@biomejs/cli-linux-arm64-musl@2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-arm64-musl/-/cli-linux-arm64-musl-2.4.5.tgz#b7ef7902237f16113061659a4c54aff5ad4513d5"
-  integrity sha512-iqLDgpzobG7gpBF0fwEVS/LT8kmN7+S0E2YKFDtqliJfzNLnAiV2Nnyb+ehCDCJgAZBASkYHR2o60VQWikpqIg==
+"@biomejs/cli-linux-arm64-musl@2.4.16":
+  version "2.4.16"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-arm64-musl/-/cli-linux-arm64-musl-2.4.16.tgz#5485d4a544d0818a29ce022256299ace49531779"
+  integrity sha512-oYxnW0ARfJkr72ezzF2OR8N/rtkgLUQeYtF8cFhVswbknHxtTcmzSsanVJP8yQKnGpGpc2ck6c5zLvHahL6Cbg==
 
-"@biomejs/cli-linux-arm64@2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-arm64/-/cli-linux-arm64-2.4.5.tgz#f110af748965cb1b57624dbbbd7acba729da8780"
-  integrity sha512-U1GAG6FTjhAO04MyH4xn23wRNBkT6H7NentHh+8UxD6ShXKBm5SY4RedKJzkUThANxb9rUKIPc7B8ew9Xo/cWg==
+"@biomejs/cli-linux-arm64@2.4.16":
+  version "2.4.16"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-arm64/-/cli-linux-arm64-2.4.16.tgz#d6df1fb75ca5d05dec7985d74ffe503c4c3d33b1"
+  integrity sha512-2kFb4//jxfZaP6D+Rj5VkHkxgyD9EoRAVBEQb8PKRv+s4NO2zYNJKXFaJmK1CmhufJOWEfpHKaRbOja7qjmdhQ==
 
-"@biomejs/cli-linux-x64-musl@2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-x64-musl/-/cli-linux-x64-musl-2.4.5.tgz#c3493eba094216e735538c55354dbc8867b51909"
-  integrity sha512-NlKa7GpbQmNhZf9kakQeddqZyT7itN7jjWdakELeXyTU3pg/83fTysRRDPJD0akTfKDl6vZYNT9Zqn4MYZVBOA==
+"@biomejs/cli-linux-x64-musl@2.4.16":
+  version "2.4.16"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-x64-musl/-/cli-linux-x64-musl-2.4.16.tgz#4ccb530d703878a239c204b13aeb8d5c8cf80d8f"
+  integrity sha512-iHDS+MCM65DPqWGu+ECC3uoALyj2H7F4nVUPxIPjz/PIl94EUu+EDfGZDzFP+NY1EOPVt9NQvwFqq7HdMmowdg==
 
-"@biomejs/cli-linux-x64@2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-x64/-/cli-linux-x64-2.4.5.tgz#15805550db4e45ffbd6c42d140d0cb5c6dbe07af"
-  integrity sha512-NdODlSugMzTlENPTa4z0xB82dTUlCpsrOxc43///aNkTLblIYH4XpYflBbf5ySlQuP8AA4AZd1qXhV07IdrHdQ==
+"@biomejs/cli-linux-x64@2.4.16":
+  version "2.4.16"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-x64/-/cli-linux-x64-2.4.16.tgz#725c4e4dc0ec7182bb49c18c9d301184e669889e"
+  integrity sha512-NbcBbi/nJqn5baae6wqRXdS7Gadf2uRpehSh6vMSYpG8OhkXl/Xg8aorWrJ+9VWqAT5ml90alLvorkpMW0nBwQ==
 
-"@biomejs/cli-win32-arm64@2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-win32-arm64/-/cli-win32-arm64-2.4.5.tgz#8dae57dc8ffc1e82e00a59e623b5023c09726a4d"
-  integrity sha512-EBfrTqRIWOFSd7CQb/0ttjHMR88zm3hGravnDwUA9wHAaCAYsULKDebWcN5RmrEo1KBtl/gDVJMrFjNR0pdGUw==
+"@biomejs/cli-win32-arm64@2.4.16":
+  version "2.4.16"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-win32-arm64/-/cli-win32-arm64-2.4.16.tgz#639e5433eb2c412c7798702708c96851de0b7827"
+  integrity sha512-0rgImMsNb5v/chhkIFe3wu7PEFClS6RBAYUijGL9UsYN3PanSaoK24HSSuSJb1pYbYYVjzAyZTl3gtjJ84BM8A==
 
-"@biomejs/cli-win32-x64@2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-win32-x64/-/cli-win32-x64-2.4.5.tgz#0b4d3355e0d6856cff8ed722e05ec7b0652e43ab"
-  integrity sha512-Pmhv9zT95YzECfjEHNl3mN9Vhusw9VA5KHY0ZvlGsxsjwS5cb7vpRnHzJIv0vG7jB0JI7xEaMH9ddfZm/RozBw==
+"@biomejs/cli-win32-x64@2.4.16":
+  version "2.4.16"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-win32-x64/-/cli-win32-x64-2.4.16.tgz#30fb75d856864ff9d3324da20c72c9f121c9ae16"
+  integrity sha512-Kp85jgoBHa05gix6UIRjfCDiUV3w/8VIdZ247VyyO2gEjaw12WEVhdIjlxp/AMzXxqxQwbxNTDVZ3Mwd2RG5rw==
 
 "@emotion/babel-plugin@^11.13.5":
   version "11.13.5"
@@ -2227,10 +2227,10 @@ ms@^2.1.3:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-nanoid@^3.3.11:
-  version "3.3.11"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.11.tgz#4f4f112cefbe303202f2199838128936266d185b"
-  integrity sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==
+nanoid@^3.3.12:
+  version "3.3.12"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.12.tgz#ab3d912e217a6d0a514f00a72a16543a28982c05"
+  integrity sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==
 
 node-addon-api@^7.0.0:
   version "7.1.1"
@@ -2342,21 +2342,12 @@ postcss-simple-vars@^7.0.1:
   resolved "https://registry.yarnpkg.com/postcss-simple-vars/-/postcss-simple-vars-7.0.1.tgz#836b3097a54dcd13dbd3c36a5dbdd512fad2954c"
   integrity sha512-5GLLXaS8qmzHMOjVxqkk1TZPf1jMqesiI7qLhnlyERalG0sMbHIbJqrcnrpmZdKCLglHnRHoEBB61RtGTsj++A==
 
-postcss@^8.5.6:
-  version "8.5.6"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.6.tgz#2825006615a619b4f62a9e7426cc120b349a8f3c"
-  integrity sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==
+postcss@^8.5.15, postcss@^8.5.6:
+  version "8.5.15"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.15.tgz#d1eaf677a324e9ec02196da2d3fecf4a0b9a735c"
+  integrity sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==
   dependencies:
-    nanoid "^3.3.11"
-    picocolors "^1.1.1"
-    source-map-js "^1.2.1"
-
-postcss@^8.5.8:
-  version "8.5.8"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.8.tgz#6230ecc8fb02e7a0f6982e53990937857e13f399"
-  integrity sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==
-  dependencies:
-    nanoid "^3.3.11"
+    nanoid "^3.3.12"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
@@ -2832,10 +2823,10 @@ tinyrainbow@^3.0.3:
   resolved "https://registry.yarnpkg.com/tinyrainbow/-/tinyrainbow-3.0.3.tgz#984a5b1c1b25854a9b6bccbe77964d0593d1ea42"
   integrity sha512-PSkbLUoxOFRzJYjjxHJt9xro7D+iilgMX/C9lawzVuYiIdcihh9DXmVibBe8lmcFrRi/VzlPjBxbN7rH24q8/Q==
 
-tmp@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.5.tgz#b06bcd23f0f3c8357b426891726d16015abfd8f8"
-  integrity sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==
+tmp@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.7.tgz#26f4db11d1601ce8012dcb8a798ece1c06a99059"
+  integrity sha512-e0votIpp4Uo2AJYSzVHV6xCcawuiez3DzqDAbrTc3YxBkplN6e+dM13ZeIcZnDg/QpSuU2zfZ3rzwY8ukEnaXw==
 
 trim-lines@^3.0.0:
   version "3.0.1"
